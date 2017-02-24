@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -uo pipefail
+IFS=$'\n\t'
+
+COMMAND=${1:-""}
+ROOT=${2:-"$(pwd)"}
+
+if [ "$COMMAND" == "" ]; then
+cat <<EOF
+Usage: generate SCRIPT_PATH
+
+Generates a new daemon script and launchd plist to run $SCRIPT_PATH.
+
+See https://github.com/Schoonology/on-air for more information.
+EOF
+fi
+
+# We generate a "daemon" script because the Program launchd option doesn't
+# otherwise handle Unix pipes correctly.
+cat <<EOF > daemon
+#!/usr/bin/env bash
+$ROOT/camera_status | $ROOT/$COMMAND
+EOF
+chmod +x ./daemon
+
+# A number of these options are "better safe than sorry", rather than required.
+cat <<EOF > launchd.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.schoonology.on-air</string>
+    <key>Program</key>
+    <string>$ROOT/daemon</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>WorkingDirectory</key>
+    <string>$ROOT</string>
+    <key>StandardErrorPath</key>
+    <string>/dev/null</string>
+    <key>StandardOutPath</key>
+    <string>/dev/null</string>
+    <key>KeepAlive</key>
+    <true/>
+  </dict>
+</plist>
+EOF

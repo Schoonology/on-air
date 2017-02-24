@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-`stty -echoctl`
+if $stdin.tty?
+  `stty -echoctl`
+end
 
 last = nil
 
