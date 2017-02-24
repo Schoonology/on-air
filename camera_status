@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+`stty -echoctl`
+
+last = nil
+
+def camera_in_use?
+  `lsof /Library/CoreMediaIO/Plug-Ins/DAL/AppleCamera.plugin/Contents/MacOS/AppleCamera`
+
+  $?.exitstatus == 0
+end
+
+def set_light_state(enabled)
+  puts [enabled ? 1 : 0]
+end
+
+begin
+  loop do
+    current = camera_in_use?
+
+    if last != current
+      last = current
+
+      set_light_state(current)
+    end
+
+    sleep 1
+  end
+rescue Interrupt => e
+  # Do nothing.
+end
