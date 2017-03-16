@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+lsof /Library/CoreMediaIO/Plug-Ins/DAL/AppleCamera.plugin/Contents/MacOS/AppleCamera \
+  | grep -v PID \
+  | awk '{ print $2 }' \
+  | xargs kill
+
