@@ -26,3 +26,11 @@ $ launchctl load launchd.plist
 That's it! At that point, the example script should be plugging away, writing
 its example output to...`/dev/null`. (If you want to change that and see it in
 action, just change the `Standard*Path` options in the generated plist.)
+
+### Start on Login
+
+To start On-Air whenever you log in, you'll need to add the same plist to `~/Library/LaunchAgents`. From the `on-air` directory:
+
+```
+ln -sf $(pwd)/launchd.plist ~/Library/LaunchAgents/com.schoonology.on-air.plist
+```
