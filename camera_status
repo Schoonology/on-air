@@ -25,7 +25,7 @@ begin
       set_light_state(current)
     end
 
-    sleep 10
+    sleep 1
   end
 rescue Interrupt => e
   # Do nothing.
