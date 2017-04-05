@@ -9,7 +9,7 @@ if [ "$COMMAND" == "" ]; then
 cat <<EOF
 Usage: generate SCRIPT_PATH
 
-Generates a new daemon script and launchd plist to run $SCRIPT_PATH.
+Generates a new daemon script and launchd plist to run \$SCRIPT_PATH.
 
 See https://github.com/Schoonology/on-air for more information.
 EOF
@@ -46,3 +46,6 @@ cat <<EOF > launchd.plist
   </dict>
 </plist>
 EOF
+
+# Finally, build the helper app.
+clang on_air.c -framework CoreMediaIO -o on_air

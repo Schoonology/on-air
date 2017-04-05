@@ -6,9 +6,7 @@ end
 last = nil
 
 def camera_in_use?
-  `lsof /Library/CoreMediaIO/Plug-Ins/DAL/AppleCamera.plugin/Contents/MacOS/AppleCamera`
-
-  $?.exitstatus == 0
+  return `./on_air`.to_i > 0
 end
 
 def set_light_state(enabled)
