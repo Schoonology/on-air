@@ -22,6 +22,35 @@ uint8_t checkResult(OSStatus result) {
     return 1;
 }
 
+UInt8 queryAudioDeviceIsInput(AudioDeviceID device) {
+    AudioObjectPropertyAddress address = {
+        kAudioDevicePropertyStreamConfiguration,
+        kAudioObjectPropertyScopeInput,
+        kAudioObjectPropertyElementMaster
+    };
+
+    uint32_t dataSize = 0;
+
+    OSStatus result = AudioObjectGetPropertyDataSize(device, &address, 0, NULL, &dataSize);
+    if (checkResult(result)) {
+        return 0;
+    }
+
+    AudioBufferList *data = malloc(dataSize);
+    result = AudioObjectGetPropertyData(device, &address, 0, NULL, &dataSize, data);
+    if (checkResult(result)) {
+        return 0;
+    }
+
+    for (uint32_t i = 0; i < data->mNumberBuffers; i++) {
+        if (data->mBuffers[i].mNumberChannels) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 AudioDeviceID *queryAudioDevices(uint32_t *count) {
     AudioObjectPropertyAddress address = {
         kAudioHardwarePropertyDevices,
@@ -45,10 +74,20 @@ AudioDeviceID *queryAudioDevices(uint32_t *count) {
         return NULL;
     }
 
+    for (uint32_t i = 0; i < *count; i++) {
+        if (!queryAudioDeviceIsInput(devices[i])) {
+            devices[i] = 0;
+        }
+    }
+
     return devices;
 }
 
 UInt8 queryAudioDeviceInUse(AudioDeviceID device) {
+    if (device == 0) {
+        return 0;
+    }
+
     AudioObjectPropertyAddress address = {
         kAudioDevicePropertyDeviceIsRunningSomewhere,
         kAudioObjectPropertyScopeInput,
