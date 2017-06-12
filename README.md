@@ -1,6 +1,6 @@
 # On-Air
 
-A little script to let you handle when your camera turns on and off.
+A little script to let you handle when your camera (or microphone!) turns on and off.
 
 ## Usage (with example script)
 
