@@ -48,4 +48,4 @@ cat <<EOF > launchd.plist
 EOF
 
 # Finally, build the helper app.
-clang on_air.c -framework CoreMediaIO -o on_air
+make --quiet
